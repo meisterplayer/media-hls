@@ -14,11 +14,11 @@
   "author": "Triple",
   "license": "Apache-2.0",
   "dependencies": {
-    "@npm-wearetriple/js-dev": "^2.3.3",
     "hls.js": "0.6.18",
     "url-toolkit": "1.0.11"
   },
   "devDependencies": {
+      "@npm-wearetriple/js-dev": "^2.3.3",
       "gulp": "^3.9.1"
   }
 }
