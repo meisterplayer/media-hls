@@ -1,4 +1,4 @@
-import Xml from './xml';
+import Xml from './Xml';
 
 class Plist {
     static parse(data) {

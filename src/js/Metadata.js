@@ -1,4 +1,4 @@
-import Plist from './plist';
+import Plist from './Plist';
 
 class Metadata {
     static parse(datas) {

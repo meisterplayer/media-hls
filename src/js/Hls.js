@@ -1,5 +1,5 @@
 import HlsJs from 'hls.js/src/hls';
-import Metadata from './metadata';
+import Metadata from './Metadata';
 
 class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
