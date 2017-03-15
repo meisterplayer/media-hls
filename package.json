@@ -1,6 +1,6 @@
 {
   "name": "@npm-wearetriple/meister-plugin-hls",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Meister plugin wrapping the hls.js player.",
   "main": "dist/Hls.js",
   "scripts": {
@@ -15,10 +15,11 @@
   "license": "Apache-2.0",
   "dependencies": {
     "hls.js": "0.6.18",
-    "url-toolkit": "1.0.11"
+    "url-toolkit": "1.0.11",
+    "webworkify": "^1.4.0"
   },
   "devDependencies": {
-      "@npm-wearetriple/js-dev": "^2.3.3",
-      "gulp": "^3.9.1"
+    "@npm-wearetriple/js-dev": "^2.3.3",
+    "gulp": "^3.9.1"
   }
 }
