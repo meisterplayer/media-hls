@@ -5,7 +5,7 @@ class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
         super(config, meister);
 
-        this.dvrThreshold = this.config.dvrThreshold;
+        this.dvrThreshold = this.config.dvrThreshold || 300;
 
         this.hls = null;
         this.hlsVersion = HlsJs.version;
