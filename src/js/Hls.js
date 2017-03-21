@@ -1,4 +1,4 @@
-import HlsJs from 'hls.js/src/hls';
+import HlsJs from 'hls.js/lib/hls';
 import Metadata from './Metadata';
 
 class Hls extends Meister.MediaPlugin {
@@ -23,6 +23,10 @@ class Hls extends Meister.MediaPlugin {
         // -1 for automatic quality selection
         this.previousLevel = -1;
         this.lowestLevel = 0;
+
+        // Auto recover properties
+        this.recoverDecodingErrorDate = null;
+        this.recoverSwapAudioCodecDate = null;
     }
 
     static get pluginName() {
@@ -106,6 +110,7 @@ class Hls extends Meister.MediaPlugin {
             this.on('_playerTimeUpdate', this._onPlayerTimeUpdate.bind(this));
             this.on('_playerSeek', this._onPlayerSeek.bind(this));
             this.on('requestSeek', this.onRequestSeek.bind(this));
+            this.on('playerError', this.onPlayerError.bind(this));
 
             // Listen to control events.
             this.on('requestBitrate', this.onRequestBitrate.bind(this));
@@ -432,6 +437,38 @@ class Hls extends Meister.MediaPlugin {
         }
     }
 
+    recoverFromMediaError() {
+        const now = performance.now();
+
+        // First try a normal recover. The server may have returned faulty data or
+        // the decoder could have crashed.
+        // 3000 gives HLS the chance to recover instead of imidiatly trying to recover again.
+        if (!this.recoverDecodingErrorDate || (now - this.recoverDecodingErrorDate) > 3000) {
+            this.recoverDecodingErrorDate = performance.now();
+            console.warn('Fatal error in Hls. Will attempt to recover.');
+
+            // Try to recover from our media error.
+            this.hls.recoverMediaError();
+
+            // Since autoStartLoad is false we need to resume the load manually.
+            this.hls.startLoad();
+            this.meister.trigger('requestPlay');
+        } else if (!this.recoverSwapAudioCodecDate || (now - this.recoverSwapAudioCodecDate) > 3000) {
+            // We still could not recover from our fatal error. We shall try swapping the audio codec.
+            this.recoverSwapAudioCodecDate = performance.now();
+            console.warn('Fatal error in Hls. Will attempt to swap audio codecs.');
+
+            // Swap audio codecs and try recovering again.
+            this.hls.swapAudioCodec();
+            this.hls.recoverMediaError();
+
+            // Since autoStartLoad is false we need to resume the load manually.
+            this.hls.startLoad();
+            this.meister.trigger('requestPlay');
+        }
+    }
+
+    // HLS errors
     onError(e, data) {
         console.warn(`Error in ${this.name}, type: ${data.details}, will attempt to recover.`);
         if (data.fatal) {
@@ -440,6 +477,20 @@ class Hls extends Meister.MediaPlugin {
             if (data.type === HlsJs.ErrorTypes.NETWORK_ERROR) {
                 this.meister.error('Network error', 'HLS-0001', data.details);
             }
+
+            // We can recover from a media error.
+            // This is slower but can result in a playing video. (As seen in Firefox)
+            if (data.type === HlsJs.ErrorTypes.MEDIA_ERROR && this.config.autoRecoverMode) {
+                this.recoverFromMediaError();
+            }
+        }
+    }
+
+    // Player errors (Errors from the videoElement)
+    onPlayerError(error) {
+        // We can recover from decode errors. This will swap codecs and try again..
+        if (error.code === error.MEDIA_ERR_DECODE && this.config.autoRecoverMode) {
+            this.recoverFromMediaError();
         }
     }
 
