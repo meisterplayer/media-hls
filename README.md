@@ -18,6 +18,11 @@ var meisterPlayer = new Meister('#player', {
         autoRecoverMode: true,
     }
 });
+
+meisterPlayer.setItem({
+    src: 'INSERT_HLS_M3U8_URL_HERE'
+    type: 'm3u8',
+});
 ```
 
 #### disabled *[Boolean]* (default: false) ####
