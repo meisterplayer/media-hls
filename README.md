@@ -1,7 +1,8 @@
 HLS.js plugin for Meister
 =======
 
-This plugin allows HLS playback in browsers that do not natively support it. But do support the MediaSource API (Most modern browsers).
+This plugin allows HLS playback in browsers that do not natively support it. This plugin uses [hls.js](https://github.com/video-dev/hls.js) internally for playback of the streams.  
+*NOTE* The browser needs to implement the MediaSource API for this to work (which most modern browsers do).
 
 Config options
 -------
