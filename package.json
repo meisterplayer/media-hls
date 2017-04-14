@@ -1,16 +1,17 @@
 {
-  "name": "@npm-wearetriple/meister-plugin-hls",
-  "version": "1.0.1",
+  "name": "meister-plugin-hls",
+  "version": "5.0.0",
   "description": "Meister plugin wrapping the hls.js player.",
   "main": "dist/Hls.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "keywords": [
     "meister",
     "video",
     "plugin"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meisterplayer/media-hls.git"
+  },
   "author": "Triple",
   "license": "Apache-2.0",
   "dependencies": {
