@@ -557,5 +557,6 @@ class Hls extends Meister.MediaPlugin {
     }
 }
 
+Meister.registerPlugin('hls', Hls);
 Meister.registerPlugin(Hls.pluginName, Hls);
 export default Hls;

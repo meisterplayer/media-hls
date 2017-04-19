@@ -1,29 +1,30 @@
 const gulp = require('gulp');
-const tripleGulp = require('@npm-wearetriple/js-dev').gulp;
+const tripleGulp = require('meister-js-dev').gulp;
+const webpackTask = require('meister-gulp-webpack-tasks');
 
 // Building tasks.
 const MODULE_NAME = 'Hls';
 
-const rollupConfig = tripleGulp.rollupModule.createRollupConfig('index.js', false, console.warn, {}, {
-    presets: ['es2015-rollup'], // breaks the hls.js .babelrc file
-    babelrc: false,
-});
-const bundleConfig = tripleGulp.rollupModule.createBundleConfig(`./build/${MODULE_NAME}.js`);
-gulp.task('build', tripleGulp.rollupModule.createRollupBundler(rollupConfig, bundleConfig));
+gulp.task('build', (done) => {
+    const bundleConfig = webpackTask.createConfig('./index.js', `build/${MODULE_NAME}.js`, false);
+    const bundleCompiler = webpackTask.createCompiler(bundleConfig);
 
-const rollupConfigDist = tripleGulp.rollupModule.createRollupConfig('index.js', false, console.warn, {}, {
-    presets: ['es2015-rollup'], // breaks the hls.js .babelrc file
-    babelrc: false,
+    webpackTask.createBuildTask(bundleCompiler)(done);
 });
-const bundleConfigDist = tripleGulp.rollupModule.createBundleConfig(`./dist/${MODULE_NAME}.js`);
-gulp.task('build:dist', tripleGulp.rollupModule.createRollupBundler(rollupConfigDist, bundleConfigDist));
 
-const rollupConfigMin = tripleGulp.rollupModule.createRollupConfig('index.js', true, console.warn, {}, {
-    presets: ['es2015-rollup'], // breaks the hls.js .babelrc file
-    babelrc: false,
+gulp.task('build:dist', (done) => {
+    const bundleConfigDist = webpackTask.createConfig('./index.js', `dist/${MODULE_NAME}.js`, false);
+    const bundleCompilerDist = webpackTask.createCompiler(bundleConfigDist);
+
+    webpackTask.createBuildTask(bundleCompilerDist)(done);
 });
-const bundleConfigMin = tripleGulp.rollupModule.createBundleConfig(`./dist/${MODULE_NAME}.min.js`, false, MODULE_NAME, 'umd');
-gulp.task('build:min', tripleGulp.rollupModule.createRollupBundler(rollupConfigMin, bundleConfigMin));
+
+gulp.task('build:min', (done) => {
+    const bundleConfigMin = webpackTask.createConfig('./index.js', `dist/${MODULE_NAME}.min.js`, true);
+    const bundleCompilerMin = webpackTask.createCompiler(bundleConfigMin);
+
+    webpackTask.createBuildTask(bundleCompilerMin)(done);
+});
 
 // Documentation tasks.
 gulp.task('js-docs', tripleGulp.jsdocModule.createGenerateDocs(['./src/**/*.js'], './docs/js-docs'));
