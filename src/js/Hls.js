@@ -1,5 +1,6 @@
 import HlsJs from 'hls.js/lib/hls';
 import Metadata from './Metadata';
+import packageJson from '../../package.json';
 
 class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
@@ -31,6 +32,10 @@ class Hls extends Meister.MediaPlugin {
 
     static get pluginName() {
         return 'Hls';
+    }
+
+    static get pluginVersion() {
+        return packageJson.version;
     }
 
     isItemSupported(item) {
