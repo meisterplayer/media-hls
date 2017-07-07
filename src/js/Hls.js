@@ -106,10 +106,15 @@ class Hls extends Meister.MediaPlugin {
         return new Promise((resolve) => {
             // TODO: Handle not being able to initiate a player.
             const mediaElement = this.player.mediaElement;
-
-            this.hls = new HlsJs({
+            let config = {
                 autoStartLoad: false,
-            });
+            };
+
+            if (item.Hls && item.Hls.fineTuning) {
+                config = Object.assign(config, item.Hls.fineTuning);
+            }
+
+            this.hls = new HlsJs(config);
 
             // Listen to control events.
             this.on('playerError', this.onPlayerError.bind(this));
