@@ -81,3 +81,27 @@ var meisterPlayer = new Meister('#player', {
     }
 });
 ```
+
+### Item config
+
+These settings can be set per item. These will be available using the ```Hls: {}``` namespace.
+
+#### fineTuning *[Object]*
+
+Here you can set all the finetuning options that can be found here: [https://github.com/video-dev/hls.js/blob/master/doc/API.md#fine-tuning]()
+
+Example:
+
+```JavaScript
+meister.setItem({
+    src: 'M3U8_URL_HERE',
+    type: 'm3u8',
+    Hls: {
+        fineTuning: {
+            debug: true,
+            nudgeMaxRetry: 5,
+        }
+    }
+});
+```
+
