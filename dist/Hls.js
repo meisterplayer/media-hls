@@ -16759,7 +16759,7 @@ var Hls = function (_Meister$MediaPlugin) {
 
             this.previousLevel = -1;
             this.lowestLevel = 0;
-            this.duration = 0;
+            this.mediaDuration = 0;
             this.item = null;
         }
     }, {
@@ -16793,18 +16793,18 @@ var Hls = function (_Meister$MediaPlugin) {
             return new Promise(function (resolve) {
                 // TODO: Handle not being able to initiate a player.
                 var mediaElement = _this4.player.mediaElement;
-
-                _this4.hls = new _hls2.default({
+                var config = {
                     autoStartLoad: false
-                });
+                };
 
-                // Display the correct title.
-                _this4.on('_playerTimeUpdate', _this4._onPlayerTimeUpdate.bind(_this4));
-                _this4.on('_playerSeek', _this4._onPlayerSeek.bind(_this4));
-                _this4.on('requestSeek', _this4.onRequestSeek.bind(_this4));
-                _this4.on('playerError', _this4.onPlayerError.bind(_this4));
+                if (item.Hls && item.Hls.fineTuning) {
+                    config = Object.assign(config, item.Hls.fineTuning);
+                }
+
+                _this4.hls = new _hls2.default(config);
 
                 // Listen to control events.
+                _this4.on('playerError', _this4.onPlayerError.bind(_this4));
                 _this4.on('requestBitrate', _this4.onRequestBitrate.bind(_this4));
                 _this4.on('requestGoLive', function () {
                     return _this4.onRequestGoLive();
@@ -16882,9 +16882,9 @@ var Hls = function (_Meister$MediaPlugin) {
                     var live = data.details.live;
                     var hasDVR = false;
 
-                    _this4.duration = data.details.totalduration;
+                    _this4.mediaDuration = data.details.totalduration;
 
-                    if (live && _this4.duration > _this4.dvrThreshold) {
+                    if (live && _this4.mediaDuration > _this4.dvrThreshold) {
                         hasDVR = true;
                     }
 
@@ -16895,7 +16895,7 @@ var Hls = function (_Meister$MediaPlugin) {
                     _this4.meister.trigger('itemTimeInfo', {
                         hasDVR: hasDVR,
                         isLive: live,
-                        duration: _this4.duration
+                        duration: _this4.mediaDuration
                     });
                 });
 
@@ -16967,11 +16967,11 @@ var Hls = function (_Meister$MediaPlugin) {
     }, {
         key: '_onPlayerTimeUpdate',
         value: function _onPlayerTimeUpdate() {
-            var playOffset = this.meister.duration - this.duration;
+            var playOffset = this.player.duration - this.mediaDuration;
 
             this.meister.trigger('playerTimeUpdate', {
-                currentTime: this.meister.currentTime - playOffset,
-                duration: this.duration
+                currentTime: this.player.currentTime - playOffset,
+                duration: this.mediaDuration
             });
 
             this.broadcastTitle();
@@ -16979,10 +16979,10 @@ var Hls = function (_Meister$MediaPlugin) {
     }, {
         key: '_onPlayerSeek',
         value: function _onPlayerSeek() {
-            var playOffset = this.meister.duration - this.duration;
+            var playOffset = this.player.duration - this.mediaDuration;
 
-            var currentTime = this.meister.currentTime - playOffset;
-            var duration = this.duration;
+            var currentTime = this.player.currentTime - playOffset;
+            var duration = this.mediaDuration;
             var relativePosition = currentTime / duration;
 
             this.meister.trigger('playerSeek', {
@@ -16997,27 +16997,27 @@ var Hls = function (_Meister$MediaPlugin) {
             var targetTime = void 0;
 
             if (Number.isFinite(e.relativePosition)) {
-                var playOffset = this.meister.duration - this.duration;
-                targetTime = this.duration * e.relativePosition + playOffset;
+                var playOffset = this.player.duration - this.mediaDuration;
+                targetTime = this.mediaDuration * e.relativePosition + playOffset;
             } else if (Number.isFinite(e.timeOffset)) {
-                targetTime = this.meister.currentTime + e.timeOffset;
+                targetTime = this.player.currentTime + e.timeOffset;
             } else if (Number.isFinite(e.targetTime)) {
-                var _playOffset = this.meister.duration - this.duration;
+                var _playOffset = this.player.duration - this.mediaDuration;
                 targetTime = e.targetTime + _playOffset;
             }
 
-            if (!e.forcedStart && this.blockSeekForward && targetTime > this.meister.currentTime) {
+            if (!e.forcedStart && this.blockSeekForward && targetTime > this.player.currentTime) {
                 return;
             }
 
             if (Number.isFinite(targetTime)) {
-                this.meister.currentTime = targetTime;
+                this.player.currentTime = targetTime;
             }
         }
     }, {
         key: 'onRequestGoLive',
         value: function onRequestGoLive() {
-            var duration = this.meister.duration;
+            var duration = this.player.duration;
             var targetDuration = this.hls.levels[this.hls.currentLevel].details.targetduration;
             var liveSync = this.hls.config.liveSyncDurationCount;
 
@@ -17025,7 +17025,7 @@ var Hls = function (_Meister$MediaPlugin) {
 
             var liveTime = duration - liveOffset;
 
-            this.meister.currentTime = liveTime;
+            this.player.currentTime = liveTime;
         }
     }, {
         key: 'processMetadata',
@@ -17051,7 +17051,7 @@ var Hls = function (_Meister$MediaPlugin) {
     }, {
         key: 'broadcastTitle',
         value: function broadcastTitle() {
-            var time = this.meister.currentTime;
+            var time = this.player.currentTime;
             // No need to spam events.
             if (this.previousMetadata && this.previousMetadata.start < time && time < this.previousMetadata.end) {
                 return;
@@ -17230,6 +17230,33 @@ var Hls = function (_Meister$MediaPlugin) {
             if (this.hls) this.hls.destroy();
         }
     }, {
+        key: 'duration',
+        get: function get() {
+            if (!this.hls) {
+                return NaN;
+            }
+
+            return this.mediaDuration;
+        }
+    }, {
+        key: 'currentTime',
+        get: function get() {
+            if (!this.hls || !this.player) {
+                return NaN;
+            }
+
+            var playOffset = this.player.duration - this.mediaDuration;
+            return this.player.currentTime - playOffset;
+        },
+        set: function set(time) {
+            if (!this.hls || !this.player) {
+                return;
+            }
+
+            var playOffset = this.player.duration - this.mediaDuration;
+            this.player.currentTime = time + playOffset;
+        }
+    }, {
         key: 'currentItem',
         get: function get() {
             var metadata = this.currentlyPlaying;
@@ -17258,7 +17285,7 @@ var Hls = function (_Meister$MediaPlugin) {
 
             // Traverse backwards since it is more likely that the player is near the end
             var data = null;
-            var time = this.meister.currentTime;
+            var time = this.player.currentTime;
             for (var i = this.metadata.length - 1; i >= 0; i--) {
                 if (this.metadata[i].start < time && time < this.metadata[i].end) {
                     data = this.metadata[i];
@@ -17496,7 +17523,7 @@ exports.default = Xml;
 
 module.exports = {
 	"name": "@meisterplayer/plugin-hls",
-	"version": "5.1.0",
+	"version": "5.2.0",
 	"description": "Meister plugin wrapping the hls.js player.",
 	"main": "dist/Hls.js",
 	"keywords": [
