@@ -15,7 +15,7 @@
   "author": "Triple",
   "license": "Apache-2.0",
   "dependencies": {
-    "hls.js": "0.7.4",
+    "hls.js": "0.7.10",
     "url-toolkit": "^2.0.1",
     "webworkify": "^1.4.0"
   },
