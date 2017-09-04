@@ -1,6 +1,7 @@
 import HlsJs from 'hls.js/lib/hls';
 import Metadata from './Metadata';
 import packageJson from '../../package.json';
+import parseId3Tag from './services/parserId3Tag';
 
 class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
@@ -346,7 +347,15 @@ class Hls extends Meister.MediaPlugin {
     }
 
     processMetadata(data) {
+        try {
+            const id3Tags = parseId3Tag(data.samples[0].data);
+            this.meister.trigger('id3Tags', id3Tags);
+        } catch (error) {
+            console.error(error);
+        }
+
         const newMetadata = Metadata.parse(data);
+
         if (!newMetadata) {
             return;
         }
