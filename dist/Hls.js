@@ -64,7 +64,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 65);
+/******/ 	return __webpack_require__(__webpack_require__.s = 67);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -17342,9 +17342,13 @@ var _Metadata = __webpack_require__(61);
 
 var _Metadata2 = _interopRequireDefault(_Metadata);
 
-var _package = __webpack_require__(64);
+var _package = __webpack_require__(66);
 
 var _package2 = _interopRequireDefault(_package);
+
+var _parserId3Tag = __webpack_require__(65);
+
+var _parserId3Tag2 = _interopRequireDefault(_parserId3Tag);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -17700,7 +17704,15 @@ var Hls = function (_Meister$MediaPlugin) {
     }, {
         key: 'processMetadata',
         value: function processMetadata(data) {
+            try {
+                var id3Tags = (0, _parserId3Tag2.default)(data.samples[0].data);
+                this.meister.trigger('id3Tags', id3Tags);
+            } catch (error) {
+                console.error(error);
+            }
+
             var newMetadata = _Metadata2.default.parse(data);
+
             if (!newMetadata) {
                 return;
             }
@@ -18189,11 +18201,179 @@ exports.default = Xml;
 
 /***/ }),
 /* 64 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Id3Tag =
+/**
+ * Creates an instance of Id3Tag.
+ *
+ * @param {string} key
+ * @param {ArrayBuffer} data
+ * @param {number} [startTime=0]
+ * @param {number} [endTime=0]
+ * @memberof Id3Tag
+ */
+function Id3Tag(key, data) {
+    var startTime = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+    var endTime = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+
+    _classCallCheck(this, Id3Tag);
+
+    this.data = data;
+    this.key = key;
+    this.type = 'org.id3';
+    this.startTime = startTime;
+    this.endTime = endTime;
+};
+
+exports.default = Id3Tag;
+
+/***/ }),
+/* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = parseId3Tag;
+
+var _Id3Tag = __webpack_require__(64);
+
+var _Id3Tag2 = _interopRequireDefault(_Id3Tag);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /**
+                                                                                                                                                                                                     * Follows the http://id3.org/id3v2.4.0-structure specification
+                                                                                                                                                                                                     * @author Franklin Waller <fr.l.waller@gmail.com>
+                                                                                                                                                                                                     */
+
+/**
+ * Our magic number, this represents 'ID3'.
+ */
+var MAGIC_NUMBER = new Uint8Array([0x49, 0x44, 0x33]);
+
+/**
+ * The size of our ID3 header.
+ */
+var HEADER_BYTE_SIZE = 10;
+
+/**
+ * The size of the ID3 frame id.
+ * This is always 4 bytes and can look like this TTTX
+ */
+var FRAME_ID_SIZE = 4;
+
+/**
+ * The byte size of the "size" of the frame.
+ */
+var FRAME_SIZE_BYTES = 4;
+
+/**
+ * The frame flag size.
+ */
+var FRAME_FLAG_SIZE = 2;
+
+/**
+ * Empty byte indication
+ */
+var EMPTY_BYTE = 0xFF;
+
+/**
+ * Validates if this is a real ID3 tag.
+ *
+ * @param {Uint8Array} magicNumber
+ * @returns {boolean} isValid
+ */
+function validateId3(magicNumber) {
+  var isValid = true;
+
+  MAGIC_NUMBER.forEach(function (byte, i) {
+    if (byte !== magicNumber[i]) {
+      isValid = false;
+    }
+  });
+
+  return isValid;
+}
+
+/**
+ * Checks if an frameId is empty.
+ *
+ * @param {Array} frameId
+ * @returns {boolean} empty
+ */
+function isEmpty(frameId) {
+  // The frameId cannot contain a single empty byte
+  // So we can be sure it's empty.
+  return !!frameId.find(function (byte) {
+    return byte === EMPTY_BYTE;
+  });
+}
+
+/**
+ * Parses Id3 tags.
+ *
+ * @export
+ * @param {Uint8Array} data
+ * @throws {Error}
+ * @returns {Array<Id3Tag>}
+ */
+function parseId3Tag(data) {
+  var magicNumber = data.slice(0, 3);
+
+  if (!validateId3(magicNumber)) {
+    throw new Error('Invalid ID3 tag');
+  }
+
+  var buffer = Array.from(data);
+
+  // We don't really care about the header for now
+  // Let's just skip the header and get right into the good stuff.
+  var afterHeaderBytes = buffer.splice(0, HEADER_BYTE_SIZE);
+  var frames = [];
+
+  do {
+    var frameId = buffer.splice(0, FRAME_ID_SIZE);
+    var frameSize = buffer.splice(0, FRAME_SIZE_BYTES).reduce(function (sum, value) {
+      return sum + value;
+    });
+    var frameFlags = buffer.splice(0, FRAME_FLAG_SIZE);
+    var frameBody = buffer.splice(0, frameSize);
+
+    if (!isEmpty(frameId)) {
+      frames.push({
+        key: String.fromCharCode.apply(String, _toConsumableArray(frameId)),
+        value: new Uint8Array(frameBody).buffer,
+        flags: frameFlags
+      });
+    }
+  } while (buffer.length > 0);
+
+  return frames.map(function (frame) {
+    return new _Id3Tag2.default(frame.key, frame.value);
+  });
+}
+
+/***/ }),
+/* 66 */
 /***/ (function(module, exports) {
 
 module.exports = {
 	"name": "@meisterplayer/plugin-hls",
-	"version": "5.2.0",
+	"version": "5.3.0",
 	"description": "Meister plugin wrapping the hls.js player.",
 	"main": "dist/Hls.js",
 	"keywords": [
@@ -18218,11 +18398,14 @@ module.exports = {
 		"babel-preset-es2015": "^6.24.0",
 		"babel-preset-es2017": "^6.22.0",
 		"gulp": "^3.9.1"
+	},
+	"peerDependencies": {
+		"@meisterplayer/meisterplayer": ">= 5.1.0"
 	}
 };
 
 /***/ }),
-/* 65 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(17);
