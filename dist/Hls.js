@@ -17366,6 +17366,7 @@ var Hls = function (_Meister$MediaPlugin) {
 
         var _this = _possibleConstructorReturn(this, (Hls.__proto__ || Object.getPrototypeOf(Hls)).call(this, config, meister));
 
+        _this.maxErrors = _this.config.maxErrors || 5;
         _this.dvrThreshold = _this.config.dvrThreshold || 300;
 
         _this.hls = null;
@@ -17384,6 +17385,7 @@ var Hls = function (_Meister$MediaPlugin) {
         // -1 for automatic quality selection
         _this.previousLevel = -1;
         _this.lowestLevel = 0;
+        _this.amountOfErrors = 0;
 
         // Auto recover properties
         _this.recoverDecodingErrorDate = null;
@@ -17648,6 +17650,12 @@ var Hls = function (_Meister$MediaPlugin) {
                 duration: this.mediaDuration
             });
 
+            // Player update times are rewarded with minus 1 error.
+            // This is because the player is playing again. And the error was not fatal.
+            if (this.amountOfErrors !== 0) {
+                this.amountOfErrors -= 1;
+            }
+
             this.broadcastTitle();
         }
     }, {
@@ -17865,7 +17873,9 @@ var Hls = function (_Meister$MediaPlugin) {
     }, {
         key: 'onError',
         value: function onError(e, data) {
-            console.warn('Error in ' + this.name + ', type: ' + data.details + ', will attempt to recover.');
+            this.amountOfErrors += 1;
+
+            console.warn('Error in ' + this.name + ', type: ' + data.details + ', will attempt to recover. Errors thrown: ' + this.amountOfErrors);
             if (data.fatal) {
                 console.error('Can not recover from ' + data.type + ': ' + data.details + '.');
 
@@ -17878,6 +17888,12 @@ var Hls = function (_Meister$MediaPlugin) {
                 if (data.type === _hls2.default.ErrorTypes.MEDIA_ERROR && this.config.autoRecoverMode) {
                     this.recoverFromMediaError();
                 }
+            }
+
+            if (this.amountOfErrors === this.maxErrors) {
+                // Make sure we are stopping.
+                this.meister.pause();
+                this.meister.error('Too many errors, exceeded maximum', 'HLS-0002', data.details);
             }
         }
 
@@ -18373,7 +18389,7 @@ function parseId3Tag(data) {
 
 module.exports = {
 	"name": "@meisterplayer/plugin-hls",
-	"version": "5.3.0",
+	"version": "5.4.0",
 	"description": "Meister plugin wrapping the hls.js player.",
 	"main": "dist/Hls.js",
 	"keywords": [

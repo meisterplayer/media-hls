@@ -1,3 +1,13 @@
+<a name="5.4.0"></a>
+# [5.4.0](https://github.com/meisterplayer/media-hls/compare/v5.3.0...v5.4.0) (2017-09-14)
+
+
+### Features
+
+* **playback:** Emit error when stream stalls ([9b746e3](https://github.com/meisterplayer/media-hls/commit/9b746e3))
+
+
+
 <a name="5.3.0"></a>
 # [5.3.0](https://github.com/meisterplayer/media-hls/compare/v5.2.0...v5.3.0) (2017-09-04)
 
