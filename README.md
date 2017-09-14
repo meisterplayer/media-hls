@@ -82,6 +82,21 @@ var meisterPlayer = new Meister('#player', {
 });
 ```
 
+#### maxErrors *[Boolean]* (default: 5) ####
+
+Defines the maximum amount of errors that are allowed to be thrown.
+When the errors exceed this amount we throw a meister error.
+
+Example:
+
+``` JavaScript
+var meisterPlayer = new Meister('#player', {
+    Hls: {
+        maxErrors: 6,
+    }
+});
+```
+
 ### Item config
 
 These settings can be set per item. These will be available using the ```Hls: {}``` namespace.
