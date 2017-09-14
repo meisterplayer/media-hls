@@ -7,6 +7,7 @@ class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
         super(config, meister);
 
+        this.maxErrors = this.config.maxErrors || 5;
         this.dvrThreshold = this.config.dvrThreshold || 300;
 
         this.hls = null;
@@ -25,6 +26,7 @@ class Hls extends Meister.MediaPlugin {
         // -1 for automatic quality selection
         this.previousLevel = -1;
         this.lowestLevel = 0;
+        this.amountOfErrors = 0;
 
         // Auto recover properties
         this.recoverDecodingErrorDate = null;
@@ -297,6 +299,12 @@ class Hls extends Meister.MediaPlugin {
             duration: this.mediaDuration,
         });
 
+        // Player update times are rewarded with minus 1 error.
+        // This is because the player is playing again. And the error was not fatal.
+        if (this.amountOfErrors !== 0) {
+            this.amountOfErrors -= 1;
+        }
+
         this.broadcastTitle();
     }
 
@@ -504,7 +512,9 @@ class Hls extends Meister.MediaPlugin {
 
     // HLS errors
     onError(e, data) {
-        console.warn(`Error in ${this.name}, type: ${data.details}, will attempt to recover.`);
+        this.amountOfErrors += 1;
+
+        console.warn(`Error in ${this.name}, type: ${data.details}, will attempt to recover. Errors thrown: ${this.amountOfErrors}`);
         if (data.fatal) {
             console.error(`Can not recover from ${data.type}: ${data.details}.`);
 
@@ -517,6 +527,12 @@ class Hls extends Meister.MediaPlugin {
             if (data.type === HlsJs.ErrorTypes.MEDIA_ERROR && this.config.autoRecoverMode) {
                 this.recoverFromMediaError();
             }
+        }
+
+        if (this.amountOfErrors === this.maxErrors) {
+            // Make sure we are stopping.
+            this.meister.pause();
+            this.meister.error('Too many errors, exceeded maximum', 'HLS-0002', data.details);
         }
     }
 
