@@ -2,6 +2,7 @@ import HlsJs from 'hls.js/lib/hls';
 import Metadata from './Metadata';
 import packageJson from '../../package.json';
 import parseId3Tag from './services/parserId3Tag';
+import isAdItem from './services/isAdItem';
 
 class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
@@ -111,6 +112,7 @@ class Hls extends Meister.MediaPlugin {
             const mediaElement = this.player.mediaElement;
             let config = {
                 autoStartLoad: false,
+                debug: false,
             };
 
             if (item.Hls && item.Hls.fineTuning) {
@@ -223,7 +225,21 @@ class Hls extends Meister.MediaPlugin {
 
             // Prepare for playback.
             this.hls.attachMedia(mediaElement);
-            this.hls.loadSource(item.src);
+
+            // The current playlist item
+            const currentPlaylistItem = this.meister.playlist.list[this.meister.playlist.index];
+
+            // This fixes an issue where GoogleIMA was calling mediaElement.load() on a Hls.js item
+            // to preserve user interactions.
+            // This waits first for the initialUserAction to be completed. so it can then load it all in.
+            // Also this fix only applies to non autoplay devices. (See GoogleIMA trigger)
+            if (isAdItem(currentPlaylistItem) && (this.meister.browser.isMobile || this.meister.browser.isNonAutoPlay)) {
+                this.one('GoogleIma:initialUserActionCompleted', () => {
+                    this.hls.loadSource(item.src);
+                });
+            } else {
+                this.hls.loadSource(item.src);
+            }
 
             // Error handling.
             this.hls.on(HlsJs.Events.ERROR, (e, data) => this.onError(e, data));
@@ -346,7 +362,6 @@ class Hls extends Meister.MediaPlugin {
         const duration = this.player.duration;
         const targetDuration = this.hls.levels[this.hls.currentLevel].details.targetduration;
         const liveSync = this.hls.config.liveSyncDurationCount;
-
         const liveOffset = targetDuration * liveSync;
 
         const liveTime = duration - liveOffset;
