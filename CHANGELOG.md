@@ -1,3 +1,13 @@
+<a name="5.4.1"></a>
+## [5.4.1](https://github.com/meisterplayer/media-hls/compare/v5.4.0...v5.4.1) (2018-02-07)
+
+
+### Bug Fixes
+
+* **ads:** Fix issue where initialising hls before load() would result in a 404 error ([85970b2](https://github.com/meisterplayer/media-hls/commit/85970b2))
+
+
+
 <a name="5.4.0"></a>
 # [5.4.0](https://github.com/meisterplayer/media-hls/compare/v5.3.0...v5.4.0) (2017-09-14)
 
