@@ -1,3 +1,13 @@
+<a name="5.5.0"></a>
+# [5.5.0](https://github.com/meisterplayer/media-hls/compare/v5.4.1...v5.5.0) (2018-02-19)
+
+
+### Features
+
+* **config:** Add option to provide default finetuning ([d434559](https://github.com/meisterplayer/media-hls/commit/d434559))
+
+
+
 <a name="5.4.1"></a>
 ## [5.4.1](https://github.com/meisterplayer/media-hls/compare/v5.4.0...v5.4.1) (2018-02-07)
 
