@@ -90,7 +90,7 @@ export default function parseId3Tag(data) {
 
     // We don't really care about the header for now
     // Let's just skip the header and get right into the good stuff.
-    const afterHeaderBytes = buffer.splice(0, HEADER_BYTE_SIZE);
+    buffer.splice(0, HEADER_BYTE_SIZE);
     const frames = [];
 
     do {

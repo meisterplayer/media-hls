@@ -66,11 +66,11 @@ class Hls extends Meister.MediaPlugin {
                     supported: false,
                     errorCode: Meister.ErrorCodes.NO_DRM,
                 });
-            } else {
-                return resolve({
-                    supported: true,
-                });
             }
+
+            return resolve({
+                supported: true,
+            });
         });
     }
 
@@ -135,7 +135,7 @@ class Hls extends Meister.MediaPlugin {
                 if (this.audioMode) {
                     let onlyAudio = true;
 
-                    for (let i = 0; i < data.levels.length; i++) {
+                    for (let i = 0; i < data.levels.length; i += 1) {
                         const subLevel = data.levels[i];
 
                         if (subLevel.videoCodec) {
@@ -145,7 +145,7 @@ class Hls extends Meister.MediaPlugin {
                     }
 
                     if (!onlyAudio) {
-                        for (let i = 0; i < data.levels.length; i++) {
+                        for (let i = 0; i < data.levels.length; i += 1) {
                             const subLevel = data.levels[i];
 
                             if (!subLevel.videoCodec) {
@@ -266,7 +266,7 @@ class Hls extends Meister.MediaPlugin {
                     }
 
                     if (!this.config.disableVisibilitySwitch) {
-                        this.on('windowVisibilityChange', (e) => this.visibilityChange(e));
+                        this.on('windowVisibilityChange', e => this.visibilityChange(e));
                     }
                 });
 
@@ -295,6 +295,7 @@ class Hls extends Meister.MediaPlugin {
         this.player.currentTime = time + playOffset;
     }
 
+    // eslint-disable-next-line class-methods-use-this
     playerLoadedMetadata() {
         // override the base function because HLSjs has its own startPosition handling
     }
@@ -386,7 +387,7 @@ class Hls extends Meister.MediaPlugin {
             return;
         }
 
-        for (let i = this.metadata.length - 1; i >= 0; i--) {
+        for (let i = this.metadata.length - 1; i >= 0; i -= 1) {
             const loopData = this.metadata[i];
 
             if (newMetadata.title === loopData.title) {
@@ -436,7 +437,7 @@ class Hls extends Meister.MediaPlugin {
 
         // TODO: Find audio stream.
         let lowestBitrate = levels[0].bitrate;
-        for (let i = 0; i < levels.length; i++) {
+        for (let i = 0; i < levels.length; i += 1) {
             const level = levels[i];
 
             if (level.bitrate < lowestBitrate) {
@@ -453,7 +454,7 @@ class Hls extends Meister.MediaPlugin {
             index: -1,
         });
 
-        for (let i = 0; i < levels.length; i++) {
+        for (let i = 0; i < levels.length; i += 1) {
             const level = levels[i];
 
             bitrates.push({
@@ -589,7 +590,7 @@ class Hls extends Meister.MediaPlugin {
         // Traverse backwards since it is more likely that the player is near the end
         let data = null;
         const time = this.player.currentTime;
-        for (let i = this.metadata.length - 1; i >= 0; i--) {
+        for (let i = this.metadata.length - 1; i >= 0; i -= 1) {
             if (this.metadata[i].start < time && time < this.metadata[i].end) {
                 data = this.metadata[i];
                 break;

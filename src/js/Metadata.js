@@ -4,7 +4,7 @@ class Metadata {
     static parse(datas) {
         const allInfo = [];
 
-        for (let i = 0; i < datas.samples.length; i++) {
+        for (let i = 0; i < datas.samples.length; i += 1) {
             const data = datas.samples[i];
             allInfo.push({
                 data: Metadata.toChar(data.data),
@@ -26,7 +26,7 @@ class Metadata {
             data.title = `${data.data.artistName} - ${data.data.titleName}`;
 
             data.start = allInfo[0].pts;
-            const duration = parseInt(data.data.duration) / 1000;
+            const duration = parseInt(data.data.duration, 10) / 1000;
             data.end = data.start + duration;
 
             return data;
@@ -38,7 +38,7 @@ class Metadata {
     static toChar(arr) {
         let string = '';
 
-        for (let i = 0; i < arr.length; i++) {
+        for (let i = 0; i < arr.length; i += 1) {
             const charNum = arr[i];
 
             string += String.fromCharCode(charNum);

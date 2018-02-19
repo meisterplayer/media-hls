@@ -9,7 +9,7 @@ class Plist {
         let prevKey = '';
         const result = {};
 
-        for (let i = 0; i < children.length; i++) {
+        for (let i = 0; i < children.length; i += 1) {
             const tag = children[i];
 
             if (tag.tagName === 'key') {
