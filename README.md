@@ -40,6 +40,23 @@ var meisterPlayer = new Meister('#player', {
 });
 ```
 
+#### fineTuning *[Object]*
+
+Here you can set all the finetuning options that can be found here: [https://github.com/video-dev/hls.js/blob/master/doc/API.md#fine-tuning](). Options set here will be used as the default for all items. These can be overridden for specific items by passing updated configuration with the item.
+
+Example:
+
+``` JavaScript
+var meisterPlayer = new Meister('#player', {
+    Hls: {
+        fineTuning: {
+            debug: true,
+            nudgeMaxRetry: 5,
+        },
+    }
+});
+```
+
 #### dvrEnabled *[Boolean]* (default: true) ####
 
 This enables/disables DVR capabilities in HLS if it is supported by the stream.
@@ -103,7 +120,7 @@ These settings can be set per item. These will be available using the ```Hls: {}
 
 #### fineTuning *[Object]*
 
-Here you can set all the finetuning options that can be found here: [https://github.com/video-dev/hls.js/blob/master/doc/API.md#fine-tuning]()
+By providing fineTuning paramaters with the item they will only be applied for that specific item. A list of all the finetuning options can be found here: [https://github.com/video-dev/hls.js/blob/master/doc/API.md#fine-tuning](). Options set here will override any options given when intialising the plugin.
 
 Example:
 
