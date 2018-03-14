@@ -17,6 +17,7 @@ class Hls extends Meister.MediaPlugin {
         this.manifestParsed = false;
 
         this.audioMode = false;
+        this.browser = meister.browser.getInfo();
 
         this.metadata = [];
         this.previousMetadata = null;
@@ -107,7 +108,7 @@ class Hls extends Meister.MediaPlugin {
 
         const startPosition = Number.isFinite(item.startPosition) && item.startPosition > 0 ? item.startPosition : -1;
 
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             // TODO: Handle not being able to initiate a player.
             const mediaElement = this.player.mediaElement;
 
@@ -237,8 +238,14 @@ class Hls extends Meister.MediaPlugin {
             // This waits first for the initialUserAction to be completed. so it can then load it all in.
             // Also this fix only applies to non autoplay devices. (See GoogleIMA trigger)
             if (isAdItem(currentPlaylistItem) && (this.meister.browser.isMobile || this.meister.browser.isNonAutoPlay)) {
+                const browserInfo = await this.browser;
+
                 this.one('GoogleIma:initialUserActionCompleted', () => {
                     this.hls.loadSource(item.src);
+
+                    if (browserInfo.isNonAutoPlay) {
+                        this.meister.playerPlugin.mediaElement.load();
+                    }
                 });
             } else {
                 this.hls.loadSource(item.src);
