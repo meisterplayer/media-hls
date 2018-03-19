@@ -1,3 +1,13 @@
+<a name="5.5.1"></a>
+## [5.5.1](https://github.com/meisterplayer/media-hls/compare/v5.5.0...v5.5.1) (2018-03-19)
+
+
+### Bug Fixes
+
+* **ads:** Fix issue where player would not continue after an ad on mobile ([8772e1b](https://github.com/meisterplayer/media-hls/commit/8772e1b))
+
+
+
 <a name="5.5.0"></a>
 # [5.5.0](https://github.com/meisterplayer/media-hls/compare/v5.4.1...v5.5.0) (2018-02-19)
 
