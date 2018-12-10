@@ -256,7 +256,7 @@ class Hls extends Meister.MediaPlugin {
 
             // Only start loading the stream when playback is requested.
             if (this.meister.config.autoplay) {
-                if (!this.config.disableVisibilitySwitch) {
+                if (this.config.visibilitySwitch) {
                     this.on('windowVisibilityChange', this.visibilityChange.bind(this));
                 }
                 resolve();
@@ -272,7 +272,7 @@ class Hls extends Meister.MediaPlugin {
                         this.hls.on(HlsJs.Events.MANIFEST_PARSED, startPlayback);
                     }
 
-                    if (!this.config.disableVisibilitySwitch) {
+                    if (this.config.visibilitySwitch) {
                         this.on('windowVisibilityChange', e => this.visibilityChange(e));
                     }
                 });

@@ -85,9 +85,9 @@ var meisterPlayer = new Meister('#player', {
 });
 ```
 
-#### disableVisibilitySwitch *[Boolean]* (default: false) ####
+#### visibilitySwitch *[Boolean]* (default: false) ####
 
-Disables the quality switching when the player is not in an active tab or is minimized. (Default behavior is when the user either selects a different tab or minimizes the tab the player will select the lowest video quality to save bandwidth)
+Enables quality switching when the player is not in an active tab or is minimized. When the user either selects a different tab or minimizes the tab the player will select the lowest video quality to save bandwidth.
 
 Example:
 
