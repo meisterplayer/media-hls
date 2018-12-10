@@ -1,3 +1,17 @@
+# Change Log
+
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+<a name="5.5.2"></a>
+## [5.5.2](https://github.com/meisterplayer/media-hls/compare/v5.5.1...v5.5.2) (2018-12-10)
+
+
+### Bug Fixes
+
+* **quality:** No longer switch to lowest quality on visibility change ([1e0e430](https://github.com/meisterplayer/media-hls/commit/1e0e430))
+
+
+
 <a name="5.5.1"></a>
 ## [5.5.1](https://github.com/meisterplayer/media-hls/compare/v5.5.0...v5.5.1) (2018-03-19)
 
@@ -67,6 +81,3 @@
 ### Features
 
 * **pluginVersion:** Add pluginVersion to class ([6e5beb4](https://github.com/meisterplayer/media-hls/commit/6e5beb4))
-
-
-
