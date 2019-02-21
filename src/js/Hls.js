@@ -3,6 +3,7 @@ import Metadata from './Metadata';
 import packageJson from '../../package.json';
 import parseId3Tag from './services/parserId3Tag';
 import isAdItem from './services/isAdItem';
+import getAkamaiHls from './services/getAkamaiHls';
 
 class Hls extends Meister.MediaPlugin {
     constructor(config, meister, next) {
@@ -123,7 +124,12 @@ class Hls extends Meister.MediaPlugin {
                 config = Object.assign(config, item.Hls.fineTuning);
             }
 
-            this.hls = new HlsJs(config);
+            if (this.config.akamai) {
+                window.Hls = HlsJs;
+                this.hls = await getAkamaiHls(config, this.config);
+            } else {
+                this.hls = new HlsJs(config);
+            }
 
             // Listen to control events.
             this.on('playerError', this.onPlayerError.bind(this));

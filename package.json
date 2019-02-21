@@ -22,6 +22,7 @@
   "author": "Triple",
   "license": "Apache-2.0",
   "dependencies": {
+    "@npm-wearetriple/load-script": "^1.0.0",
     "hls.js": "0.7.11",
     "url-toolkit": "^2.0.1",
     "webworkify": "^1.4.0"
