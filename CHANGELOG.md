@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.6.0"></a>
+# [5.6.0](https://github.com/meisterplayer/media-hls/compare/v5.5.2...v5.6.0) (2019-03-08)
+
+
+### Features
+
+* **network:** Add Akamai support ([1c354c1](https://github.com/meisterplayer/media-hls/commit/1c354c1))
+
+
+
 <a name="5.5.2"></a>
 ## [5.5.2](https://github.com/meisterplayer/media-hls/compare/v5.5.1...v5.5.2) (2018-12-10)
 
