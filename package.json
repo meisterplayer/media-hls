@@ -1,6 +1,6 @@
 {
   "name": "@meisterplayer/plugin-hls",
-  "version": "5.6.0",
+  "version": "5.7.0",
   "description": "Meister plugin wrapping the hls.js player.",
   "main": "dist/Hls.js",
   "keywords": [

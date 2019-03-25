@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.7.0"></a>
+# [5.7.0](https://github.com/meisterplayer/media-hls/compare/v5.6.0...v5.7.0) (2019-03-25)
+
+
+### Features
+
+* **network:** Add config option for the AMA SDK ([4ae6acc](https://github.com/meisterplayer/media-hls/commit/4ae6acc))
+
+
+
 <a name="5.6.0"></a>
 # [5.6.0](https://github.com/meisterplayer/media-hls/compare/v5.5.2...v5.6.0) (2019-03-08)
 
