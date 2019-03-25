@@ -137,3 +137,50 @@ meister.setItem({
 });
 ```
 
+### Akamai Media Acceleration
+
+This plugin also supports use of the Akamai Media Acceleration SDK.
+
+#### akamai *[Boolen]* (default: false)
+
+This flag toggles the use of the SDK.
+
+Example:
+
+``` JavaScript
+var meisterPlayer = new Meister('#player', {
+    Hls: {
+        akamai: true,
+    }
+});
+```
+
+#### akamaiScriptUrl *[String]* (default: 'https://media-acceleration-host.akamaized.net/sdk/js/stable/hlsjs.min.js')
+
+The location from which to fetch the SDK script. Defaults to Akamai's own CDN.
+
+Example:
+
+``` JavaScript
+var meisterPlayer = new Meister('#player', {
+    Hls: {
+        akamaiScriptUrl: 'https://my-own.location.net/ama_sdk.js',
+    }
+});
+```
+
+#### akamaiConfig *[Object]* (default: None)
+
+An object containing configuration for the AMA SDK.
+
+Example:
+
+``` JavaScript
+var meisterPlayer = new Meister('#player', {
+    Hls: {
+        akamaiConfig: {
+            log_level: 'DEBUG',
+        },
+    }
+});
+```
