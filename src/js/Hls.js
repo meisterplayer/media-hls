@@ -377,13 +377,8 @@ class Hls extends Meister.MediaPlugin {
 
     onRequestGoLive() {
         const duration = this.player.duration;
-        const targetDuration = this.hls.levels[this.hls.currentLevel].details.targetduration;
-        const liveSync = this.hls.config.liveSyncDurationCount;
-        const liveOffset = targetDuration * liveSync;
 
-        const liveTime = duration - liveOffset;
-
-        this.player.currentTime = liveTime;
+        this.player.currentTime = duration - 1;
     }
 
     processMetadata(data) {
