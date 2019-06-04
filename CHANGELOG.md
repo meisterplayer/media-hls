@@ -1,6 +1,15 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [5.7.1](https://github.com/meisterplayer/media-hls/compare/v5.7.0...v5.7.1) (2019-06-04)
+
+
+### Bug Fixes
+
+* **live:** Reduce live edge seeking complexity ([77ceaa5](https://github.com/meisterplayer/media-hls/commit/77ceaa5))
+
+
 
 <a name="5.7.0"></a>
 # [5.7.0](https://github.com/meisterplayer/media-hls/compare/v5.6.0...v5.7.0) (2019-03-25)
