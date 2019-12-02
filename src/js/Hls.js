@@ -138,6 +138,7 @@ class Hls extends Meister.MediaPlugin {
 
             // Trigger this to make it look pretty.
             this.hls.on(HlsJs.Events.MANIFEST_LOADED, (event, data) => {
+                this.hls.startLoad(startPosition);
                 // data.levels contains audio stream here
                 if (this.audioMode) {
                     let onlyAudio = true;
@@ -161,27 +162,8 @@ class Hls extends Meister.MediaPlugin {
                             }
                         }
                     } else {
-                        if (this.meister.config.autoplay) {
-                            this.hls.startLoad(startPosition);
-                        } else {
-                            this.one('requestPlay', () => {
-                                if (this.manifestParsed) {
-                                    this.hls.startLoad(startPosition);
-                                } else {
-                                    const startPlayback = () => {
-                                        this.hls.startLoad(startPosition);
-                                        this.hls.off(HlsJs.Events.MANIFEST_PARSED, startPlayback);
-                                    };
-                                    this.hls.on(HlsJs.Events.MANIFEST_PARSED, startPlayback);
-                                }
-                            });
-                        }
                         resolve();
                     }
-                }
-
-                if (!this.audioMode && this.meister.config.autoplay) {
-                    this.hls.startLoad(startPosition);
                 }
 
                 if (!this.config.splashTitle) {
