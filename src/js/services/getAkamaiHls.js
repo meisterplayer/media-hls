@@ -1,4 +1,4 @@
-import loadScript from '@npm-wearetriple/load-script';
+import loadScript from '@meisterplayer/util-load-script';
 
 export default async function getAkamaiHls(hlsJsConfig, meisterConfig) {
     const scriptUrl = meisterConfig.akamaiScriptUrl || 'https://media-acceleration-host.akamaized.net/sdk/js/stable/hlsjs.min.js';
