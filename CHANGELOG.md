@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.7.3](https://github.com/meisterplayer/media-hls/compare/v5.7.2...v5.7.3) (2019-12-03)
+
+
+### Bug Fixes
+
+* **build:** Update dependency name in import ([37bcfb5](https://github.com/meisterplayer/media-hls/commit/37bcfb5))
+* Always fetch stream info on load ([b6b032d](https://github.com/meisterplayer/media-hls/commit/b6b032d))
+
+
+
 ### [5.7.2](https://github.com/meisterplayer/media-hls/compare/v5.7.1...v5.7.2) (2019-07-12)
 
 
