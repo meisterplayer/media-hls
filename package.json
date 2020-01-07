@@ -1,6 +1,6 @@
 {
   "name": "@meisterplayer/plugin-hls",
-  "version": "5.7.3",
+  "version": "5.8.0-beta",
   "description": "Meister plugin wrapping the hls.js player.",
   "main": "dist/Hls.js",
   "keywords": [
@@ -23,7 +23,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@meisterplayer/util-load-script": "1.0.1",
-    "hls.js": "0.7.11",
+    "hls.js": "0.13.1",
     "url-toolkit": "^2.0.1",
     "webworkify": "^1.4.0"
   },

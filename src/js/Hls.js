@@ -1,4 +1,4 @@
-import HlsJs from 'hls.js/lib/hls';
+import HlsJs from 'hls.js';
 import Metadata from './Metadata';
 import packageJson from '../../package.json';
 import parseId3Tag from './services/parserId3Tag';
